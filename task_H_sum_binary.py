@@ -1,36 +1,44 @@
 def reg_sum(r_one, r_two, shift):
     sums = {
-        ('0', '0', 0): ('0', 0),
-        ('0', '1', 0): ('1', 0),
-        ('1', '0', 0): ('1', 0),
-        ('1', '1', 0): ('0', 1),
-        ('0', '0', 1): ('1', 0),
-        ('0', '1', 1): ('0', 1),
-        ('1', '0', 1): ('0', 1),
-        ('1', '1', 1): ('0', 2),
+        ('0', '0', False): ('0', False),
+        ('0', '1', False): ('1', False),
+        ('1', '0', False): ('1', False),
+        ('1', '1', False): ('0', True),
+        ('0', '0', True): ('1', False),
+        ('0', '1', True): ('0', True),
+        ('1', '0', True): ('0', True),
+        ('1', '1', True): ('1', True),
         }
     return sums[(r_one, r_two, shift)]
 
 def sum_binary(one, two):
-    one = one[::-1]
-    two = two[::-1]
-    result = ''
-    shift = False
-    index = 0
-    while index < len(one) and index < len(two):
-        if one[index] == 0 and two[index] ==0:
-            result == '0'
-        elif one[index] == '1' and two[index] == '1':
-            shift = False
-            result += '0'
-        else:
-            result += '1'
-        
-    return '0'
+    length = max(len(one), len(two))
+    one = one.rjust(length, '0')[::-1]
+    two = two.rjust(length, '0')[::-1]
 
-assert sum_binary('1010', '1011') == '10101' 
-assert sum_binary('0', '0') == '0' 
-assert sum_binary('0', '0') == '0' 
-assert sum_binary('0', '1') == '1' 
-assert sum_binary('1', '0') == '1' 
-assert sum_binary('', '') == '0' 
+    result = ''
+    shift = 0
+    index = 0
+    while index < length:
+        digit, shift = reg_sum(one[index], two[index], shift)
+        result += digit
+        index += 1
+    
+    if shift: result += '1'
+    
+    result = result[::-1].lstrip('0')
+    if result == '': result = '0'
+
+    return result
+
+if __name__ == '__main__':
+    # one = input()
+    # two = input()
+    # print(sum_binary(one, two))
+    assert sum_binary('1010', '1011') == '10101' 
+    assert sum_binary('0', '0') == '0' 
+    assert sum_binary('0', '0') == '0' 
+    assert sum_binary('0', '1') == '1' 
+    assert sum_binary('1', '0') == '1' 
+    # assert sum_binary('', '') == '0' 
+    assert sum_binary('1100', '00101101') == '111001' 
