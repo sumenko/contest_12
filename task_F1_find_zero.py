@@ -1,35 +1,36 @@
-from gen_data import generate
 import time
+from gen_data import generate
 
 def find_zeros(n, data):
-    times = []
-    start = time.time()
-    street = [1 if i!='0' else 0 for i in data.split()]
-    times.append(time.time())
-    zero_paths = [n for _ in range(n)]
-    times.append(time.time())
-    
+    street = data.split() # улица
+    paths = [] # расстояния до нулей
 
     index = 0
-    while index < n:
-        try:
-            index = street.index(0, index)
-        except ValueError:
-            break
-        for i in range(n):
-            length = abs(index - i)
-            if length < zero_paths[i]:
-                zero_paths[i] = length
+    zero_left = street.index('0', 0)
+    zero_right = zero_left
+
+    while index < len(street):
+        if index == zero_right:
+            zero_left = zero_right
+            try:
+                zero_right = street.index('0', index + 1)
+            except ValueError:
+                pass
+
+        right = abs(zero_right-index)
+        left = abs(zero_left-index)
+
+        paths.append(str(min(right, left)))
         index += 1
 
-    times.append(time.time())
-    print('\n'.join(map(lambda f: '{:.2f}'.format(f-start), times)))
-    return ' '.join([str(i) for i in zero_paths])
+    return ' '.join(paths)
 
 if __name__ == '__main__':
-    # assert find_zeros(5, '0 1 4 9 0') == '0 1 2 1 0'
+    assert find_zeros(5, '0 1 4 9 0') == '0 1 2 1 0'
+    assert find_zeros(6, '0 7 9 4 8 20') == '0 1 2 3 4 5'
+    assert find_zeros(9, '98 0 10 77 0 59 28 0 94') == '1 0 1 1 0 1 1 0 1'
+    assert find_zeros(12, '99 0 100 72 43 49 0 51 19 61 93 31') == '1 0 1 2 2 1 0 1 2 3 4 5'
     # exit(0)
-    # assert find_zeros(6, '0 7 9 4 8 20') == '0 1 2 3 4 5'
     
     n = 10**6
     print('Prepare data')
