@@ -1,5 +1,6 @@
 import random
 
+
 def generate(n, max_int, max_zeros):
     sample = random.sample(range(1, max_int), n)
     num_zeros = random.randint(1, max_zeros)

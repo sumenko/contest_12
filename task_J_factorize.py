@@ -1,5 +1,6 @@
 import time
 
+
 def min_divider(num):
     divider = 2
     limit = num
